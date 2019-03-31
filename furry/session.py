@@ -39,7 +39,6 @@ class session:
                 self.logger.new_batch(len(xs))
                 out = self.model(xs)
                 loss = self.loss(out, ys)
-                print(loss)
                 loss.backward()
                 self.optimizer.step()
                 self.optimizer.reset_grads()
