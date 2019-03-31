@@ -1,11 +1,18 @@
 import torch
-from furry.utils import scalar
+from furry.utils import scalar, default_device, upload
 
 class Optimizer:
-    def __init__(self, module=None):
+    def __init__(self, module=None, dev=None):
+        if dev is None:
+            dev = default_device
         self.__module = None
         if module is not None:
             self.module = module
+        self._dev = dev
+    
+    @property
+    def device(self):
+        return self._dev
 
     def step(self):
         pass
@@ -28,8 +35,8 @@ class Optimizer:
         self.init()
 
 class SGD(Optimizer):
-    def __init__(self, module=None, lr=1e-4, momentum=0.9):
-        super().__init__(module)
+    def __init__(self, module=None, lr=1e-4, momentum=0.9, dev=None):
+        super().__init__(module, dev=dev)
         self.lr = lr
         self.momentum = momentum
     
@@ -47,18 +54,18 @@ class SGD(Optimizer):
                 self.v[param] = grad.detach()
 
 class Adam(Optimizer):
-    def __init__(self, module=None, alpha=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-8):
-        super().__init__(module)
+    def __init__(self, module=None, alpha=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-8, dev=None):
+        super().__init__(module, dev=dev)
         self.alpha = alpha
         self.beta_1 = beta_1
         self.beta_2 = beta_2
         self.epsilon = epsilon
     
     def init(self):
-        self.m, self.v, self.t = {}, {}, scalar(0.0)
+        self.m, self.v, self.t = {}, {}, upload(scalar(0.0), dev=self.device)
         for param in self.module.parameters(recurse=True):
-            self.m[param] = scalar(0.0)
-            self.v[param] = scalar(0.0)
+            self.m[param] = upload(scalar(0.0), dev=self.device)
+            self.v[param] = upload(scalar(0.0), dev=self.device)
 
     def step(self):
         with torch.no_grad():

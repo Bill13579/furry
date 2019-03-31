@@ -7,6 +7,10 @@ import numpy as np
 
 cuda_available = torch.cuda.is_available()
 
+default_device = "cpu"
+if cuda_available:
+    default_device = "cuda:0"
+
 def conv2d_output_shape(height, width, filter_height, filter_width, out_channels, stride):
     return (out_channels, ((height - filter_height) / stride + 1), ((width - filter_width) / stride + 1))
 
@@ -45,11 +49,8 @@ def scalar(x):
         return prepare_data([x], torch.float32)
     return x
 
-def upload(tensor):
-    if cuda_available:
-        return tensor.cuda()
-    else:
-        return tensor
+def upload(tensor, dev=default_device):
+    return tensor.to(device=dev)
 
 def download(tensor):
     return tensor.cpu().detach().numpy()

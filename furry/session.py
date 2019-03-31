@@ -1,11 +1,11 @@
 import math
 import torch
 from furry.logger import TrainingLogger
-from furry.utils import shuffle_data, upload, download
+from furry.utils import shuffle_data, upload, download, default_device
 from furry.loss import mse
 
 class session:
-    def __init__(self, model, optimizer, loss=mse, logger=TrainingLogger()):
+    def __init__(self, model, optimizer, loss=mse, logger=TrainingLogger(), dev=default_device):
         self.model = model
         self.optimizer = optimizer
         if self.optimizer.module is None:
@@ -13,6 +13,11 @@ class session:
             self.optimizer.init()
         self.loss = loss
         self.logger = logger
+        self._dev = dev
+    
+    @property
+    def device(self):
+        return self._dev
 
     def __enter__(self):
         return self
@@ -29,8 +34,8 @@ class session:
             for xi, yi in zip(range(0,len(x),batch_size), range(0,len(y),batch_size)):
                 xs = x[xi:xi+batch_size]
                 ys = y[yi:yi+batch_size]
-                xs = upload(torch.stack(xs))
-                ys = upload(torch.stack(ys))
+                xs = upload(torch.stack(xs), dev=self.device)
+                ys = upload(torch.stack(ys), dev=self.device)
                 self.logger.new_batch(len(xs))
                 out = self.model(xs)
                 loss = self.loss(out, ys)
