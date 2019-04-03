@@ -37,7 +37,7 @@ class session:
                 xs = upload(torch.stack(xs), dev=self.device)
                 ys = upload(torch.stack(ys), dev=self.device)
                 self.logger.new_batch(len(xs))
-                out = self.model(xs)
+                out = self.model.logits(xs)
                 loss = self.loss(out, ys)
                 loss.backward()
                 self.optimizer.step()
