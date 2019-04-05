@@ -40,8 +40,7 @@ class Module(torch.nn.Module):
         return x
     
     def forward(self, x, **kwargs):
-        x = self.logits(x, **kwargs)
-        return self.__forward__(x)
+        return self.__forward__(x, **kwargs)
     
     def __broadcast__(self, x):
         if len(x.size()) == self._input_rank:
