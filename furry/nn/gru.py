@@ -29,7 +29,7 @@ class GRU(furry.Module):
         self.bias = torch.nn.Parameter(torch.zeros(self._size, requires_grad=True, dtype=self.dtype))
         self.bias_h = torch.nn.Parameter(torch.zeros(self._size, requires_grad=True, dtype=self.dtype))
         self.gates = {
-            "update": GRUGate(1, input_size=input_size[0])
+            "update": GRUGate(1, input_size=self._size)
         }
         super(GRU, self)._init_done()
     
