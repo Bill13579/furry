@@ -36,8 +36,8 @@ class Module(torch.nn.Module):
     def init(self, input_size):
         pass
     
-    def __forward__(self, x):
-        return x
+    def __forward__(self, x, **kwargs):
+        return self.logits(x, **kwargs)
     
     def forward(self, x, **kwargs):
         return self.__forward__(x, **kwargs)
