@@ -1,10 +1,11 @@
 import math
 import torch
 import furry
+from .dense import Dense
 import numpy as np
 from furry.utils import add_batch_dimension, calc_gain
 
-class GRUGate(furry.nn.Dense):
+class GRUGate(Dense):
     def __logits__(self, x):
         return furry.activation.sigmoid(super().__logits__(x))
 
