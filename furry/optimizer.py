@@ -1,5 +1,6 @@
 import torch
-from furry.utils import scalar, default_device, upload
+from furry.data import scalar, upload
+from furry.dev import default as default_device
 
 class Optimizer:
     def __init__(self, module=None, dev=None):

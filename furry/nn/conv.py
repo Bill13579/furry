@@ -1,6 +1,5 @@
 import torch
 import furry
-from furry.utils import upload
 
 class Conv2d(furry.Module):
     def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0, dilation=1, groups=1, bias=True, dev=None):

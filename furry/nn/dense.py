@@ -1,6 +1,7 @@
 import torch
 import furry
-from furry.utils import add_batch_dimension, calc_gain
+from furry.utils import calc_gain
+from furry.data import prepend_dimension
 
 class Dense(furry.Module):
     def __init__(self, size, input_size=None, dev=None):
@@ -18,4 +19,4 @@ class Dense(furry.Module):
         super(Dense, self)._init_done()
     
     def __logits__(self, x):
-        return torch.matmul(add_batch_dimension(self.weight).repeat(x.size()[0], 1, 1), x.unsqueeze(2)).squeeze(2) + self.bias
+        return torch.matmul(prepend_dimension(self.weight).repeat(x.size()[0], 1, 1), x.unsqueeze(2)).squeeze(2) + self.bias

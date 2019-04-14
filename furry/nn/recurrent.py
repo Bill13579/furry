@@ -2,7 +2,8 @@ import math
 import torch
 import furry
 import numpy as np
-from furry.utils import add_batch_dimension, calc_gain
+from furry.utils import calc_gain
+from furry.data import prepend_dimension
 
 class Recurrent(furry.Module):
     def __init__(self, size, input_size=None, dev=None):
@@ -28,16 +29,16 @@ class Recurrent(furry.Module):
     
     def __broadcast__(self, x):
         if len(x.size()) == 1:
-            x = furry.utils.add_batch_dimension(x)
+            x = prepend_dimension(x)
         if len(x.size()) == 2:
             x = x.unsqueeze(2)
         return x
     
     def __single(self, x):
-        return torch.matmul(add_batch_dimension(self.weight).repeat(x.size()[0], 1, 1), x.unsqueeze(2)).squeeze(2) + self.bias
+        return torch.matmul(prepend_dimension(self.weight).repeat(x.size()[0], 1, 1), x.unsqueeze(2)).squeeze(2) + self.bias
 
     def __hidden(self, x):
-        return torch.matmul(add_batch_dimension(self.weight_h).repeat(x.size()[0], 1, 1), x.unsqueeze(2)).squeeze(2) + self.bias_h
+        return torch.matmul(prepend_dimension(self.weight_h).repeat(x.size()[0], 1, 1), x.unsqueeze(2)).squeeze(2) + self.bias_h
 
     def __logits__(self, x, return_all=True, hidden_state=None):
         time_steps = torch.unbind(x, 2)

@@ -1,15 +1,7 @@
 import torch
 import furry.utils
-from furry.utils import default_device
-
-float32 = torch.float32
-float64 = torch.float64
-float16 = torch.float16
-uint8 = torch.uint8
-int8 = torch.int8
-int16 = torch.int16
-int32 = torch.int32
-int64 = torch.int64
+from furry.dev import default as default_device
+from furry.data import float32
 
 class Module(torch.nn.Module):
     def __init__(self, input_rank=None, dtype=float32, dev=None):
@@ -44,7 +36,7 @@ class Module(torch.nn.Module):
     
     def __broadcast__(self, x):
         if len(x.size()) == self._input_rank:
-            x = furry.utils.add_batch_dimension(x)
+            x = furry.data.prepend_dimension(x)
         return x
     
     def __logits__(self, x):

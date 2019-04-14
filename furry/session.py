@@ -1,7 +1,8 @@
 import math
 import torch
 from furry.logger import TrainingLogger
-from furry.utils import shuffle_data, upload, download, default_device
+from furry.data import sync_shuffle, upload, download
+from furry.dev import default as default_device
 from furry.loss import mse
 
 class session:
@@ -30,7 +31,7 @@ class session:
         for i in range(epochs):
             self.logger.new_epoch()
             if shuffle:
-                shuffle_data(x, y)
+                sync_shuffle(x, y)
             for xi, yi in zip(range(0,len(x),batch_size), range(0,len(y),batch_size)):
                 xs = x[xi:xi+batch_size]
                 ys = y[yi:yi+batch_size]
