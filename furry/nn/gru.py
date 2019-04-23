@@ -11,8 +11,8 @@ class GRUGate(Dense):
         return furry.activation.sigmoid(super().__logits__(x))
 
 class GRU(furry.Module):
-    def __init__(self, size, input_size=None, dev=None):
-        super(GRU, self).__init__(dtype=furry.float32, dev=dev)
+    def __init__(self, size, input_size=None, dtype=furry.float32, dev=None):
+        super(GRU, self).__init__(dtype=dtype, dev=dev)
         self.memory = None
         self._size = size
         if input_size is not None:

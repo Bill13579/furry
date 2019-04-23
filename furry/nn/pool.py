@@ -2,8 +2,8 @@ import torch
 import furry
 
 class _MaxPoolNd(furry.Module):
-    def __init__(self, d, kernel_size, stride=None, padding=0, dilation=1, return_indices=False, ceil_mode=False, dev=None):
-        super().__init__(input_rank=d+1, dtype=furry.float32, dev=dev)
+    def __init__(self, d, kernel_size, stride=None, padding=0, dilation=1, return_indices=False, ceil_mode=False, dtype=furry.float32, dev=None):
+        super().__init__(input_rank=d+1, dtype=dtype, dev=dev)
         self.kernel_size = kernel_size
         self.stride = stride if stride is not None else kernel_size
         self.padding = padding
@@ -40,8 +40,8 @@ class MaxPool3d(_MaxPoolNd):
                             self.return_indices)
 
 class _AvgPoolNd(furry.Module):
-    def __init__(self, d, kernel_size, stride=None, padding=0, ceil_mode=False, count_include_pad=True, dev=None):
-        super().__init__(input_rank=d+1, dtype=furry.float32, dev=dev)
+    def __init__(self, d, kernel_size, stride=None, padding=0, ceil_mode=False, count_include_pad=True, dtype=furry.float32, dev=None):
+        super().__init__(input_rank=d+1, dtype=dtype, dev=dev)
         self.kernel_size = kernel_size
         self.stride = stride if stride is not None else kernel_size
         self.padding = padding
