@@ -6,7 +6,26 @@ from furry.dev import default as default_device
 from furry.loss import mse
 
 class session:
+    """Session class used for training a Furry model
+    
+    Attributes:
+        model (furry.Module): The model to train.
+        optimizer (furry.optimizer.Optimizer): Optimizer.
+        loss (:obj:`function`, optional): The loss function to use. Defaults to `furry.loss.mse`.
+        logger (:obj:`furry.logger.TrainingLogger`, optional): Training logger. Defaults to `furry.logger.TrainingLogger`.
+        device (furry.device): The device to use. Defaults to `furry.dev.default`.
+    """
+
     def __init__(self, model, optimizer, loss=mse, logger=TrainingLogger(), dev=default_device):
+        """Session class used for training a Furry model
+
+        Args:
+            model (furry.Module): The model to train.
+            optimizer (furry.optimizer.Optimizer): Optimizer.
+            loss (:obj:`function`, optional): The loss function to use. Defaults to `furry.loss.mse`.
+            logger (:obj:`furry.logger.TrainingLogger`, optional): Training logger. Defaults to `furry.logger.TrainingLogger`.
+            dev (:obj:`furry.device`, optional): The device to use. Defaults to `furry.dev.default`.
+        """
         self.model = model
         self.optimizer = optimizer
         if self.optimizer.module is None:
@@ -18,6 +37,7 @@ class session:
     
     @property
     def device(self):
+        """furry.device: The device used by this session"""
         return self._dev
 
     def __enter__(self):

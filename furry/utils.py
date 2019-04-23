@@ -9,15 +9,53 @@ from furry.decorators import deprecated
 from furry.data import prepend_dimension
 
 def conv2d_output_shape(height, width, filter_height, filter_width, out_channels, stride):
+    """Calculates the output shape of Conv2d
+    
+    Args:
+        height (int): Height of the input.
+        width (int): Width of the input.
+        filter_height (int): Height of the filter.
+        filter_width (int): Width of the filter.
+        out_channels (int): Number of output channels.
+        stride (int): Convolution stride.
+    
+    Returns:
+        tuple: A tuple representing the output shape. `(out_channels, out_height, out_width)`
+    """
     return (out_channels, ((height - filter_height) / stride + 1), ((width - filter_width) / stride + 1))
 
 def hwc2chw(hwc):
+    """Change the format of `hwc` from `(height, width, channels)` to `(channels, height, width)`
+
+    Args:
+        hwc (furry.Tensor): An image tensor with format `(height, width, channels)`.
+    
+    Returns:
+        furry.Tensor: An image tensor with format `(channels, height, width)`.
+    """
     return hwc.permute(2, 0, 1)
 
 def hwc2bchw(hwc):
+    """Change the format of `hwc` from `(height, width, channels)` to `(batch, channels, height, width)`
+
+    Args:
+        hwc (furry.Tensor): An image tensor with format `(height, width, channels)`.
+    
+    Returns:
+        furry.Tensor: An image tensor with format `(batch, channels, height, width)`.
+    """
     return prepend_dimension(hwc2chw(hwc))
 
 def calc_gain(s, i):
+    """Calculates the gain for initialization of weights for dense layers
+
+    Args:
+        s (int): Layer size.
+        i (int): Input size.
+    
+    Returns:
+        int: Gain.
+    """
     return math.sqrt((i + s) / (6 * s))
 
 ################ Deprecated Methods ################

@@ -13,6 +13,7 @@ int8 = torch.int8
 int16 = torch.int16
 int32 = torch.int32
 int64 = torch.int64
+Tensor = torch.Tensor
 tensor = torch.tensor
 
 def prepend_dimension(x):
