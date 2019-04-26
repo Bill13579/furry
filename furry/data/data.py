@@ -16,7 +16,6 @@ class Data:
         self.__shuffled_x = self.__x[:]
         self.__shuffled_y = self.__y[:]
         self.__i = 0
-        self.shuffle()
     
     @property
     def x(self):
@@ -49,14 +48,11 @@ class Data:
     
     def nbatch(self, batch_size=1):
         start, end = self.__i, self.__i + batch_size
-        batch_x = self.x[start:end]
-        batch_y = self.y[start:end]
         self.__i += batch_size
-        done = False
-        if self.__i >= self.size:
-            done = True
+        done = self.__i >= self.size
+        if done:
             self.__i = 0
-        return Batch(batch_x, batch_y, final=done)
+        return Batch(self.shuffled_x[start:end], self.shuffled_y[start:end], final=done)
     
     def generator(self, batch_size=1):
         batch = self.nbatch(batch_size=batch_size)

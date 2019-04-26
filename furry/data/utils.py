@@ -5,6 +5,8 @@ import furry
 from furry.dev import default as default_device
 import numpy as np
 
+torch.set_printoptions(precision=15)
+
 float32 = torch.float32
 float64 = torch.float64
 float16 = torch.float16
@@ -35,7 +37,9 @@ def to_tensor(iterable, dtype=float32):
         return tensor(iterable, dtype=dtype)
     raise TypeError("iterable must be of type torch.Tensor, np.ndarray, or list")
 
-def scalar(x):
+def scalar(x, dtype=None):
+    if dtype is not None:
+        return to_tensor([x], dtype=dtype)
     if isinstance(x, int):
         return to_tensor([x], int32)
     if isinstance(x, float):

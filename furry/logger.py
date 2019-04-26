@@ -26,6 +26,9 @@ class TrainingLogger(Logger):
             self.batch_size = batch_size
             self.over = False
     
+    def update_epoch_size(self, epoch_size):
+        self.stat.epoch_size = epoch_size
+
     def new_session(self, epochs, epoch_size, batch_size):
         self.stat = self.Session(epochs, epoch_size, batch_size)
     

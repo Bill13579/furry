@@ -31,7 +31,7 @@ class GRU(furry.Module):
         self.bias = torch.nn.Parameter(torch.zeros(self._size, requires_grad=True, dtype=self.dtype))
         self.bias_h = torch.nn.Parameter(torch.zeros(self._size, requires_grad=True, dtype=self.dtype))
         self.gates = {
-            "update": GRUGate(1, input_size=self._size)
+            "update": GRUGate(1, input_size=self._size, dtype=self.dtype)
         }
         super(GRU, self)._init_done()
     
@@ -56,7 +56,7 @@ class GRU(furry.Module):
         results = []
         for ts in time_steps:
             ts_out = self.__single(ts)
-            if last_ts_out != 0:
+            if id(last_ts_out) != id(0):
                 ts_out += self.__hidden(last_ts_out)
             update_gate_out = self.gates["update"](ts_out)
             last_ts_out = update_gate_out * ts_out + (1 - update_gate_out) * last_ts_out

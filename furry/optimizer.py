@@ -1,15 +1,20 @@
 import torch
-from furry.data import scalar, upload
+from furry.data import scalar, upload, float32
 from furry.dev import default as default_device
 
 class Optimizer:
-    def __init__(self, module=None, dev=None):
+    def __init__(self, module=None, dtype=float32, dev=None):
         if dev is None:
             dev = default_device
         self.__module = None
         if module is not None:
             self.module = module
+        self._dtype = dtype
         self._dev = dev
+    
+    @property
+    def dtype(self):
+        return self._dtype
     
     @property
     def device(self):
@@ -55,18 +60,18 @@ class SGD(Optimizer):
                 self.v[param] = grad.detach()
 
 class Adam(Optimizer):
-    def __init__(self, module=None, alpha=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-8, dev=None):
-        super().__init__(module, dev=dev)
+    def __init__(self, module=None, alpha=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-8, dtype=float32, dev=None):
+        super().__init__(module, dtype=dtype, dev=dev)
         self.alpha = alpha
         self.beta_1 = beta_1
         self.beta_2 = beta_2
         self.epsilon = epsilon
     
     def init(self):
-        self.m, self.v, self.t = {}, {}, upload(scalar(0.0), dev=self.device)
+        self.m, self.v, self.t = {}, {}, upload(scalar(0.0, dtype=self.dtype), dev=self.device)
         for param in self.module.parameters(recurse=True):
-            self.m[param] = upload(scalar(0.0), dev=self.device)
-            self.v[param] = upload(scalar(0.0), dev=self.device)
+            self.m[param] = upload(scalar(0.0, dtype=self.dtype), dev=self.device)
+            self.v[param] = upload(scalar(0.0, dtype=self.dtype), dev=self.device)
 
     def step(self):
         with torch.no_grad():
