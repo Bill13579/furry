@@ -52,14 +52,9 @@ def upload(x, dev=default_device):
 def download(x):
     return upload(x, dev=furry.dev.CPU).detach().numpy()
 
-def stack(seq, dim=0):
-    return torch.stack(seq, dim=dim)
-
-def unstack(x, dim=0):
-    return torch.unbind(x, dim=dim)
-
-def squeeze(input, dim=None, out=None):
-    return torch.squeeze(input, dim=dim, out=out)
+stack = torch.stack
+unstack = torch.unbind
+squeeze = torch.squeeze
 
 def sync_shuffle(*xs, seed=None):
     if seed is None:
