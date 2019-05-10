@@ -55,6 +55,9 @@ def download(x):
 def stack(seq, dim=0):
     return torch.stack(seq, dim=dim)
 
+def unstack(x, dim=0):
+    return torch.unbind(x, dim=dim)
+
 def sync_shuffle(*xs, seed=None):
     if seed is None:
         seed = round(time.time() * 10e3)

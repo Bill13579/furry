@@ -7,12 +7,15 @@ from furry.utils import calc_gain
 from furry.data import prepend_dimension
 
 class GRUGate(Dense):
+    def __init__(self, size, input_size=None, dtype=furry.float32, name="GRUGate", dev=None):
+        super(GRUGate, self).__init__(size, input_size=input_size, dtype=dtype, name=name, dev=dev)
+
     def __logits__(self, x):
         return furry.activation.sigmoid(super().__logits__(x))
 
 class GRU(furry.Module):
-    def __init__(self, size, input_size=None, dtype=furry.float32, dev=None):
-        super(GRU, self).__init__(dtype=dtype, dev=dev)
+    def __init__(self, size, input_size=None, dtype=furry.float32, name="GRU", dev=None):
+        super(GRU, self).__init__(dtype=dtype, name=name, dev=dev)
         self.memory = None
         self._size = size
         if input_size is not None:

@@ -4,8 +4,8 @@ from furry.utils import calc_gain
 from furry.data import prepend_dimension
 
 class Dense(furry.Module):
-    def __init__(self, size, input_size=None, dtype=furry.float32, dev=None):
-        super(Dense, self).__init__(input_rank=1, dtype=dtype, dev=dev)
+    def __init__(self, size, input_size=None, dtype=furry.float32, name="Dense", dev=None):
+        super(Dense, self).__init__(input_rank=1, dtype=dtype, name=name, dev=dev)
         self._size = size
         if input_size is not None:
             self.init([input_size])

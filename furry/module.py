@@ -2,24 +2,34 @@ import torch
 import furry.utils
 from furry.dev import default as default_device
 from furry.data import float32
+from furry.__register import module_register
 
 class Module(torch.nn.Module):
-    def __init__(self, input_rank=None, dtype=float32, dev=None):
+    def __init__(self, input_rank=None, dtype=float32, name=None, dev=None):
         super(Module, self).__init__()
         if dev is None:
             dev = default_device
-        self._input_rank = input_rank
-        self._dtype = dtype
-        self._dev = dev
+        self.__input_rank = input_rank
+        self.__dtype = dtype
+        module_register.register(self, name)
+        self.__dev = dev
         self.__init_done = False
-    
+
+    @property
+    def input_rank(self):
+        return self.__input_rank
+
     @property
     def dtype(self):
-        return self._dtype
+        return self.__dtype
+    
+    @property
+    def name(self):
+        return module_register.nameof(self)
     
     @property
     def device(self):
-        return self._dev
+        return self.__dev
     
     def _init_done(self):
         self.to(self.device)
@@ -35,7 +45,7 @@ class Module(torch.nn.Module):
         return self.__forward__(x, **kwargs)
     
     def __broadcast__(self, x):
-        if len(x.size()) == self._input_rank:
+        if len(x.size()) == self.__input_rank:
             x = furry.data.prepend_dimension(x)
         return x
     
@@ -52,7 +62,7 @@ class Module(torch.nn.Module):
         Module.save(self, path)
     
     def ld(self, path):
-        Module.load(self, path, dev=self._dev)
+        Module.load(self, path, dev=self.__dev)
     
     @staticmethod
     def save(module, path):

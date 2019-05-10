@@ -6,8 +6,8 @@ from furry.utils import calc_gain
 from furry.data import prepend_dimension
 
 class Recurrent(furry.Module):
-    def __init__(self, size, input_size=None, dtype=furry.float32, dev=None):
-        super(Recurrent, self).__init__(dtype=dtype, dev=dev)
+    def __init__(self, size, input_size=None, dtype=furry.float32, name="Recurrent", dev=None):
+        super(Recurrent, self).__init__(dtype=dtype, name=name, dev=dev)
         self.memory = None
         self._size = size
         if input_size is not None:

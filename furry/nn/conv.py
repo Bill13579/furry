@@ -2,8 +2,8 @@ import torch
 import furry
 
 class Conv2d(furry.Module):
-    def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0, dilation=1, groups=1, bias=True, dtype=furry.float32, dev=None):
-        super().__init__(input_rank=3, dtype=dtype, dev=dev)
+    def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0, dilation=1, groups=1, bias=True, dtype=furry.float32, name="Conv2d", dev=None):
+        super().__init__(input_rank=3, dtype=dtype, name=name, dev=dev)
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.kernel_size = kernel_size

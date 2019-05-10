@@ -9,16 +9,16 @@ class Optimizer:
         self.__module = None
         if module is not None:
             self.module = module
-        self._dtype = dtype
-        self._dev = dev
+        self.__dtype = dtype
+        self.__dev = dev
     
     @property
     def dtype(self):
-        return self._dtype
+        return self.__dtype
     
     @property
     def device(self):
-        return self._dev
+        return self.__dev
 
     def step(self):
         pass

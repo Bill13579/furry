@@ -33,12 +33,12 @@ class session:
             self.optimizer.init()
         self.loss = loss
         self.logger = logger
-        self._dev = dev
+        self.__dev = dev
     
     @property
     def device(self):
         """furry.device: The device used by this session"""
-        return self._dev
+        return self.__dev
 
     def __enter__(self):
         return self
