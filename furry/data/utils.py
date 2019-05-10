@@ -58,6 +58,9 @@ def stack(seq, dim=0):
 def unstack(x, dim=0):
     return torch.unbind(x, dim=dim)
 
+def squeeze(input, dim=None, out=None):
+    return torch.squeeze(input, dim=dim, out=out)
+
 def sync_shuffle(*xs, seed=None):
     if seed is None:
         seed = round(time.time() * 10e3)
