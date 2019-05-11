@@ -30,7 +30,6 @@ class session:
         self.optimizer = optimizer
         if self.optimizer.module is None:
             self.optimizer.module = self.model
-            self.optimizer.init()
         self.loss = loss
         self.logger = logger
         self.__dev = dev

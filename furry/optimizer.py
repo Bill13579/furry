@@ -7,10 +7,10 @@ class Optimizer:
         if dev is None:
             dev = default_device
         self.__module = None
-        if module is not None:
-            self.module = module
         self.__dtype = dtype
         self.__dev = dev
+        if module is not None:
+            self.module = module
     
     @property
     def dtype(self):
