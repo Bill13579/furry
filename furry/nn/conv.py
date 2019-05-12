@@ -2,7 +2,7 @@ import torch
 import furry
 
 class Conv2d(furry.Module):
-    def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0, dilation=1, groups=1, bias=True, dtype=furry.float32, name="Conv2d", dev=None):
+    def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0, dilation=1, groups=1, bias=True, weight_initialization=furry.init.rand, bias_initialization=furry.init.zeros, dtype=furry.float32, name="Conv2d", dev=None):
         super().__init__(input_rank=3, dtype=dtype, name=name, dev=dev)
         self.in_channels = in_channels
         self.out_channels = out_channels
@@ -12,13 +12,15 @@ class Conv2d(furry.Module):
         self.dilation = dilation
         self.groups = groups
         self.use_bias = bias
+        self.weight_initialization = weight_initialization
+        self.bias_initialization = bias_initialization
         self.init()
     
     def init(self, input_size=None):
         super(Conv2d, self).init(input_size)
-        self.weight = torch.nn.Parameter(torch.rand(self.out_channels, int(self.in_channels / self.groups), self.kernel_size[0], self.kernel_size[1], requires_grad=True, dtype=self.dtype))
+        self.weight = torch.nn.Parameter(self.weight_initialization([self.out_channels, int(self.in_channels / self.groups), self.kernel_size[0], self.kernel_size[1]], requires_grad=True, dtype=self.dtype))
         if self.use_bias:
-            self.bias = torch.nn.Parameter(torch.rand(self.out_channels, requires_grad=True, dtype=self.dtype))
+            self.bias = torch.nn.Parameter(self.bias_initialization([self.out_channels], requires_grad=True, dtype=self.dtype))
         else:
             self.bias = None
         super(Conv2d, self)._init_done()

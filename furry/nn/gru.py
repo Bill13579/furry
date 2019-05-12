@@ -7,17 +7,21 @@ from furry.utils import calc_gain
 from furry.data import prepend_dimension
 
 class GRUGate(Dense):
-    def __init__(self, size, input_size=None, dtype=furry.float32, name="GRUGate", dev=None):
-        super(GRUGate, self).__init__(size, input_size=input_size, dtype=dtype, name=name, dev=dev)
+    def __init__(self, size, input_size=None, weight_initialization=furry.init.rand, bias_initialization=furry.init.zeros, dtype=furry.float32, name="GRUGate", dev=None):
+        super(GRUGate, self).__init__(size, input_size=input_size, weight_initialization=weight_initialization, bias_initialization=bias_initialization, dtype=dtype, name=name, dev=dev)
 
     def __logits__(self, x):
         return furry.activation.sigmoid(super().__logits__(x))
 
 class GRU(furry.Module):
-    def __init__(self, size, input_size=None, dtype=furry.float32, name="GRU", dev=None):
+    def __init__(self, size, input_size=None, weight_initialization=furry.init.rand, bias_initialization=furry.init.zeros, weight_h_initialization=furry.init.rand, bias_h_initialization=furry.init.zeros, dtype=furry.float32, name="GRU", dev=None):
         super(GRU, self).__init__(dtype=dtype, name=name, dev=dev)
         self.memory = None
         self._size = size
+        self.weight_initialization = weight_initialization
+        self.bias_initialization = bias_initialization
+        self.weight_h_initialization = weight_h_initialization
+        self.bias_h_initialization = bias_h_initialization
         if input_size is not None:
             self.init([input_size])
     
@@ -26,15 +30,12 @@ class GRU(furry.Module):
 
     def init(self, input_size):
         super(GRU, self).init(input_size)
-        gain = calc_gain(self._size, input_size[0])
-        self.weight = torch.nn.Parameter(torch.zeros(self._size, input_size[0], requires_grad=True, dtype=self.dtype))
-        torch.nn.init.xavier_uniform_(self.weight, gain=gain)
-        self.weight_h = torch.nn.Parameter(torch.zeros(self._size, self._size, requires_grad=True, dtype=self.dtype))
-        torch.nn.init.xavier_uniform_(self.weight_h, gain=gain)
-        self.bias = torch.nn.Parameter(torch.zeros(self._size, requires_grad=True, dtype=self.dtype))
-        self.bias_h = torch.nn.Parameter(torch.zeros(self._size, requires_grad=True, dtype=self.dtype))
+        self.weight = torch.nn.Parameter(self.weight_initialization([self._size, input_size[0]], requires_grad=True, dtype=self.dtype))
+        self.weight_h = torch.nn.Parameter(self.weight_h_initialization([self._size, self._size], requires_grad=True, dtype=self.dtype))
+        self.bias = torch.nn.Parameter(self.bias_initialization([self._size], requires_grad=True, dtype=self.dtype))
+        self.bias_h = torch.nn.Parameter(self.bias_h_initialization([self._size], requires_grad=True, dtype=self.dtype))
         self.gates = {
-            "update": GRUGate(1, input_size=self._size, dtype=self.dtype)
+            "update": GRUGate(1, input_size=self._size, weight_initialization=self.weight_initialization, bias_initialization=self.bias_initialization, dtype=self.dtype)
         }
         super(GRU, self)._init_done()
     
