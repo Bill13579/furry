@@ -1,6 +1,6 @@
 import math
 import torch
-from furry.logger import TrainingLogger
+from furry.logger import SessionLogger
 from furry.data import sync_shuffle, upload, download
 from furry.dev import default as default_device
 from furry.loss import mse
@@ -12,18 +12,18 @@ class session:
         model (furry.Module): The model to train.
         optimizer (furry.optimizer.Optimizer): Optimizer.
         loss (:obj:`function`, optional): The loss function to use. Defaults to `furry.loss.mse`.
-        logger (:obj:`furry.logger.TrainingLogger`, optional): Training logger. Defaults to `furry.logger.TrainingLogger`.
+        logger (:obj:`furry.logger.SessionLogger`, optional): Session logger. Defaults to `furry.logger.SessionLogger`.
         device (furry.device): The device to use. Defaults to `furry.dev.default`.
     """
 
-    def __init__(self, model, optimizer, loss=mse, logger=TrainingLogger(), dev=default_device):
+    def __init__(self, model, optimizer, loss=mse, logger=SessionLogger(), dev=default_device):
         """Session class used for training a Furry model
 
         Args:
             model (furry.Module): The model to train.
             optimizer (furry.optimizer.Optimizer): Optimizer.
             loss (:obj:`function`, optional): The loss function to use. Defaults to `furry.loss.mse`.
-            logger (:obj:`furry.logger.TrainingLogger`, optional): Training logger. Defaults to `furry.logger.TrainingLogger`.
+            logger (:obj:`furry.logger.SessionLogger`, optional): Session logger. Defaults to `furry.logger.SessionLogger`.
             dev (:obj:`furry.device`, optional): The device to use. Defaults to `furry.dev.default`.
         """
         self.model = model
