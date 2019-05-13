@@ -15,37 +15,30 @@ class Logger:
         self.write("\r" + text + end + (max(self.bytes_written - bytes_written, 0)) * " ", end='', file=file, flush=flush)
         self.bytes_written = bytes_written
 
-class TrainingLogger(Logger):
+class SessionLogger(Logger):
     class Session:
-        def __init__(self, epochs, epoch_size, batch_size):
-            self.sample = 0
+        def __init__(self, epochs, batch_size):
             self.batch = 0
             self.epoch = 0
             self.epochs = epochs
-            self.epoch_size = epoch_size
+            self.epoch_size = None
             self.batch_size = batch_size
             self.over = False
-    
-    def update_epoch_size(self, epoch_size):
-        self.stat.epoch_size = epoch_size
 
-    def new_session(self, epochs, epoch_size, batch_size):
-        self.stat = self.Session(epochs, epoch_size, batch_size)
+    def new_session(self, epochs, batch_size):
+        self.stat = SessionLogger.Session(epochs, batch_size)
     
     def new_epoch(self):
         self.stat.sample = 0
         self.stat.batch = 0
         self.stat.epoch += 1
     
-    def new_batch(self, batch_size):
+    def new_batch(self, x, y, batch_size):
         self.stat.sample = 0
         self.stat.batch += 1
     
-    def batch_end(self, batch_size, model_loss):
+    def batch_end(self, model_loss, model_y, x, y, batch_size):
         pass
-    
-    def new_sample(self, sample, model_output, model_loss):
-        self.stat.sample += 1
     
     def session_over(self):
         self.stat.over = True

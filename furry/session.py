@@ -46,7 +46,8 @@ class session:
         pass
     
     def fit(self, x, y, epochs=1, batch_size=32, shuffle=True):
-        self.logger.new_session(epochs, math.ceil(len(x) / batch_size), batch_size)
+        self.logger.new_session(epochs, batch_size)
+        self.logger.stat.epoch_size = math.ceil(len(x) / batch_size)
         for i in range(epochs):
             self.logger.new_epoch()
             if shuffle:
@@ -56,32 +57,33 @@ class session:
                 ys = y[yi:yi+batch_size]
                 xs = upload(torch.stack(xs), dev=self.device)
                 ys = upload(torch.stack(ys), dev=self.device)
-                self.logger.new_batch(len(xs))
+                self.logger.new_batch(xs, ys, len(xs))
                 out = self.model.logits(xs)
                 loss = self.loss(out, ys)
                 loss.backward()
                 self.optimizer.step()
                 self.optimizer.reset_grads()
-                self.logger.batch_end(len(xs), download(loss).item())
+                self.logger.batch_end(download(loss).item(), out, xs, ys, len(xs))
                 del xs, ys, out, loss
         self.logger.session_over()
     
     def fit_data(self, data, epochs=1, batch_size=32, shuffle=True):
-        self.logger.new_session(epochs, 1, batch_size)
+        self.logger.new_session(epochs, batch_size)
+        self.logger.stat.epoch_size = 1
         for i in range(epochs):
             self.logger.new_epoch()
             if shuffle:
                 data.shuffle()
             for batch in data.generator(batch_size=batch_size):
-                self.logger.update_epoch_size(math.ceil(data.size / batch_size))
+                self.logger.stat.epoch_size = math.ceil(data.size / batch_size)
                 xs = upload(torch.stack(batch.x), dev=self.device)
                 ys = upload(torch.stack(batch.y), dev=self.device)
-                self.logger.new_batch(len(xs))
+                self.logger.new_batch(xs, ys, len(xs))
                 out = self.model.logits(xs)
                 loss = self.loss(out, ys)
                 loss.backward()
                 self.optimizer.step()
                 self.optimizer.reset_grads()
-                self.logger.batch_end(len(xs), download(loss).item())
+                self.logger.batch_end(download(loss).item(), out, xs, ys, len(xs))
                 del xs, ys, out, loss, batch
         self.logger.session_over()
