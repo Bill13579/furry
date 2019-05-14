@@ -1,4 +1,5 @@
 import furry.utils
+import furry.init
 import furry.data
 from furry.data import float32, float64, float16, uint8, int8, int16, int32, int64, tensor, Tensor
 import furry.dev
