@@ -24,9 +24,6 @@ class _ConvNd(furry.Module):
         else:
             self.bias = None
         super(_ConvNd, self)._init_done()
-    
-    def __logits__(self, x):
-        return torch.nn.functional.conv2d(x, self.weight, bias=self.bias, stride=self.stride, padding=self.padding, dilation=self.dilation, groups=self.groups)
 
 class Conv1d(_ConvNd):
     def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0, dilation=1, groups=1, bias=True, weight_initialization=furry.init.rand, bias_initialization=furry.init.zeros, dtype=furry.float32, name="Conv1d", dev=None):
@@ -34,11 +31,19 @@ class Conv1d(_ConvNd):
             kernel_size = [kernel_size]
         super().__init__(1, in_channels, out_channels, kernel_size, stride=stride, padding=padding, dilation=dilation, groups=groups, bias=bias, weight_initialization=weight_initialization, bias_initialization=bias_initialization, dtype=dtype, name=name, dev=dev)
 
+    def __logits__(self, x):
+        return torch.nn.functional.conv1d(x, self.weight, bias=self.bias, stride=self.stride, padding=self.padding, dilation=self.dilation, groups=self.groups)
+
 class Conv2d(_ConvNd):
     def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0, dilation=1, groups=1, bias=True, weight_initialization=furry.init.rand, bias_initialization=furry.init.zeros, dtype=furry.float32, name="Conv2d", dev=None):
         super().__init__(2, in_channels, out_channels, kernel_size, stride=stride, padding=padding, dilation=dilation, groups=groups, bias=bias, weight_initialization=weight_initialization, bias_initialization=bias_initialization, dtype=dtype, name=name, dev=dev)
+
+    def __logits__(self, x):
+        return torch.nn.functional.conv2d(x, self.weight, bias=self.bias, stride=self.stride, padding=self.padding, dilation=self.dilation, groups=self.groups)
 
 class Conv3d(_ConvNd):
     def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0, dilation=1, groups=1, bias=True, weight_initialization=furry.init.rand, bias_initialization=furry.init.zeros, dtype=furry.float32, name="Conv3d", dev=None):
         super().__init__(3, in_channels, out_channels, kernel_size, stride=stride, padding=padding, dilation=dilation, groups=groups, bias=bias, weight_initialization=weight_initialization, bias_initialization=bias_initialization, dtype=dtype, name=name, dev=dev)
 
+    def __logits__(self, x):
+        return torch.nn.functional.conv3d(x, self.weight, bias=self.bias, stride=self.stride, padding=self.padding, dilation=self.dilation, groups=self.groups)
