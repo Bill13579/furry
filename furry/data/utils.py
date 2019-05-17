@@ -55,6 +55,7 @@ def download(x):
 stack = torch.stack
 unstack = torch.unbind
 squeeze = torch.squeeze
+unsqueeze = torch.unsqueeze
 
 def sync_shuffle(*xs, seed=None):
     if seed is None:
