@@ -10,6 +10,9 @@ def cpu():
 def gpu(i):
     return device("cuda:" + str(i))
 
+def gpu_device_name(dev):
+    return torch.cuda.get_device_name(dev)
+
 CPU = cpu()
 
 default = CPU
