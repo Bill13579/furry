@@ -9,13 +9,17 @@ class ParallelLoadedData(Data):
         super().__init__([], [])
         self.current_x = []
         self.current_y = []
+        self.current_metadata = []
         self.new_sample_loaded = threading.Event()
         self.finished = threading.Event()
         self.__finished_or_new_sample_loaded = threading.Event()
-        def register_new_sample(x, y):
-            self.append(x, y)
+        def register_new_sample(x, y, md=None):
+            if md is None:
+                md = {}
+            self.append(x, y, md=md)
             self.current_x.append(x)
             self.current_y.append(y)
+            self.current_metadata.append(md)
             self.new_sample_loaded.set()
             self.new_sample_loaded.clear()
             self.__finished_or_new_sample_loaded.set()
@@ -42,9 +46,10 @@ class ParallelLoadedData(Data):
                     if self.finished.is_set():
                         final = True
                         break
-            batch = Batch(self.current_x[:batch_size], self.current_y[:batch_size], final=final)
+            batch = Batch(self.current_x[:batch_size], self.current_y[:batch_size], self.current_metadata[:batch_size], final=final)
             del self.current_x[:batch_size]
             del self.current_y[:batch_size]
+            del self.current_metadata[:batch_size]
         else:
             batch = super().nbatch(batch_size=batch_size)
         return batch
