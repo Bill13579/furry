@@ -39,12 +39,14 @@ class ParallelLoadedData(Data):
 
     def nbatch(self, batch_size=1):
         if not self.finished.is_set():
+            self._Data__i += batch_size
             final = False
             if len(self.current_x) < batch_size:
                 for i in range(batch_size - len(self.current_x)):
                     self.__finished_or_new_sample_loaded.wait()
                     if self.finished.is_set():
                         final = True
+                        self._Data__i = 0
                         break
             batch = Batch(self.current_x[:batch_size], self.current_y[:batch_size], self.current_metadata[:batch_size], final=final)
             del self.current_x[:batch_size]
