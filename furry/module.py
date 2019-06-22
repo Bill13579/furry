@@ -18,6 +18,10 @@ class Module(torch.nn.Module):
     @property
     def input_rank(self):
         return self.__input_rank
+    
+    @input_rank.setter
+    def input_rank(self, input_rank):
+        self.__input_rank = input_rank
 
     @property
     def dtype(self):
@@ -45,7 +49,7 @@ class Module(torch.nn.Module):
         return self.__forward__(x, **kwargs)
     
     def __broadcast__(self, x):
-        if len(x.size()) == self.__input_rank:
+        if len(x.size()) == self.input_rank:
             x = furry.data.prepend_dimension(x)
         return x
     
