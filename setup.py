@@ -1,11 +1,12 @@
 import platform
 from setuptools import setup, Extension, find_packages
+from furry import VERSION
 
 with open("README.md", "r") as readme:
     long_description = readme.read()
 
 setup(name="furry",
-    version="1.1.1.1",
+    version=VERSION,
     description="",
     long_description=long_description,
     author="Bill Kudo",
