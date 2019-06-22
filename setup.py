@@ -5,7 +5,7 @@ with open("README.md", "r") as readme:
     long_description = readme.read()
 
 setup(name="furry",
-    version="1.1.0.2",
+    version="1.1.1",
     description="",
     long_description=long_description,
     author="Bill Kudo",
