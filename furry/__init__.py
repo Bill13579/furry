@@ -15,7 +15,7 @@ from furry.sequential import Sequential
 import furry.nn
 from furry.__modularized import Flatten
 
-VERSION = "1.1.1.2"
+VERSION = "1.1.1.3"
 
 def print_stat():
     import platform
