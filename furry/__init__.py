@@ -12,6 +12,7 @@ from furry.session import session
 import furry.module
 from furry.module import Module
 import furry.nn
+from furry.__modularized import Flatten
 
 VERSION = "1.1.0"
 

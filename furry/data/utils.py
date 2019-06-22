@@ -18,6 +18,9 @@ int64 = torch.int64
 Tensor = torch.Tensor
 tensor = torch.tensor
 
+def flatten(x):
+    return x.view(x.size()[0], -1)
+
 def prepend_dimension(x):
     return x.reshape(1, *x.size())
 

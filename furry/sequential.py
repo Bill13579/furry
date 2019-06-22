@@ -7,10 +7,14 @@ class Sequential(furry.module.Module):
         if len(layers) == 0:
             raise ValueError("sequential models must have at least 1 layer")
         super().__init__(input_rank=layers[0].input_rank, dtype=dtype, name=name, dev=dev)
-        self.__layers = layers
+        self.__layers = list(layers)
         for l in self.layers:
             self.add_module(module_register.nameof(l), l)
     
+    def add(self, layer):
+        self.layers.append(layer)
+        self.add_module(module_register.nameof(layer), layer)
+
     @property
     def layers(self):
         return self.__layers

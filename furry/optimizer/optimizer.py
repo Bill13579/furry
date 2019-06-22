@@ -1,5 +1,5 @@
 import torch
-from furry.data import float32
+from furry.data.utils import float32
 from furry.dev import default as default_device
 
 class Optimizer:

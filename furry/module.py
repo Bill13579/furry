@@ -1,7 +1,7 @@
 import torch
 import furry.utils
 from furry.dev import default as default_device
-from furry.data import float32
+from furry.data.utils import float32
 from furry.__register import module_register
 
 class Module(torch.nn.Module):
