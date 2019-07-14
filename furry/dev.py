@@ -26,5 +26,6 @@ def default_device():
     return __DEFAULT
 
 def set_default_device(d=__INITIAL_DEFAULT):
+    global __DEFAULT
     __DEFAULT = d
     return __DEFAULT
