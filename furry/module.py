@@ -1,6 +1,6 @@
 import torch
 import furry.utils
-from furry.dev import default as default_device
+from furry.dev import default_device
 from furry.data.utils import float32
 from furry.__register import module_register
 
@@ -8,7 +8,7 @@ class Module(torch.nn.Module):
     def __init__(self, input_rank=None, dtype=float32, name=None, dev=None):
         super(Module, self).__init__()
         if dev is None:
-            dev = default_device
+            dev = default_device()
         self.__input_rank = input_rank
         self.__dtype = dtype
         module_register.register(self, name)
@@ -73,5 +73,5 @@ class Module(torch.nn.Module):
         torch.save(module.state_dict(), path)
     
     @staticmethod
-    def load(module, path, dev=default_device):
+    def load(module, path, dev=default_device()):
         module.load_state_dict(torch.load(path, map_location=dev))

@@ -4,7 +4,7 @@ import time
 import random
 import torch
 import numpy as np
-from furry.dev import default as default_device
+from furry.dev import default_device
 from furry.decorators import deprecated
 from furry.data import prepend_dimension
 
@@ -94,7 +94,7 @@ def scalar(x):
     return x
 
 @deprecated("furry.data.upload")
-def upload(tensor, dev=default_device):
+def upload(tensor, dev=default_device()):
     return tensor.to(device=dev)
 
 @deprecated("furry.data.download")

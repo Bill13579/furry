@@ -1,11 +1,11 @@
 import torch
 from furry.data.utils import float32
-from furry.dev import default as default_device
+from furry.dev import default_device
 
 class Optimizer:
     def __init__(self, module=None, dtype=float32, dev=None):
         if dev is None:
-            dev = default_device
+            dev = default_device()
         self.__module = None
         self.__dtype = dtype
         self.__dev = dev

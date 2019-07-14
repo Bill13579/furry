@@ -2,7 +2,7 @@ import time
 import random
 import torch
 import furry
-from furry.dev import default as default_device
+from furry.dev import default_device
 import numpy as np
 
 torch.set_printoptions(precision=15)
@@ -49,7 +49,7 @@ def scalar(x, dtype=None):
         return to_tensor([x], float32)
     raise TypeError("x must be of type int or float")
 
-def upload(x, dev=default_device):
+def upload(x, dev=default_device()):
     return x.to(device=dev)
 
 def download(x):
