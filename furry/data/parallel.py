@@ -5,8 +5,9 @@ class ParallelLoadedData(Data):
     def load(self):
         self.loader.start()
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, cache=True, *args, **kwargs):
         super().__init__([], [])
+        self.cache = cache
         self.current_x = []
         self.current_y = []
         self.current_metadata = []
@@ -16,7 +17,8 @@ class ParallelLoadedData(Data):
         def register_new_sample(x, y, md=None):
             if md is None:
                 md = {}
-            self.append(x, y, md=md)
+            if self.cache:
+                self.append(x, y, md=md)
             self.current_x.append(x)
             self.current_y.append(y)
             self.current_metadata.append(md)
@@ -53,5 +55,8 @@ class ParallelLoadedData(Data):
             del self.current_y[:batch_size]
             del self.current_metadata[:batch_size]
         else:
-            batch = super().nbatch(batch_size=batch_size)
+            if self.cache:
+                batch = super().nbatch(batch_size=batch_size)
+            else:
+                batch = Batch(None, None, None, final=True)
         return batch
