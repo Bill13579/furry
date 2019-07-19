@@ -5,7 +5,7 @@ class ParallelLoadedData(Data):
     def load(self):
         self.loader.start()
 
-    def __init__(self, cache=True, *args, **kwargs):
+    def __init__(self, *args, cache=True, **kwargs):
         super().__init__([], [])
         self.cache = cache
         self.current_x = []
@@ -39,7 +39,7 @@ class ParallelLoadedData(Data):
     def load_data(self, register_new_sample, finished):
         pass
 
-    def nbatch(self, batch_size=1):
+    def nbatch(self, batch_size=1, as_tensor=False):
         if not self.finished.is_set():
             self._Data__i += batch_size
             final = False
@@ -54,6 +54,7 @@ class ParallelLoadedData(Data):
             del self.current_x[:batch_size]
             del self.current_y[:batch_size]
             del self.current_metadata[:batch_size]
+            self._nbatch_batch_type_set(batch, as_tensor)
         else:
             if self.cache:
                 batch = super().nbatch(batch_size=batch_size)

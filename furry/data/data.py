@@ -1,4 +1,4 @@
-from furry.data.utils import sync_shuffle
+from furry.data.utils import sync_shuffle, tensor_type_set, stack, float32
 
 class Batch:
     __slots__ = ["x", "y", "metadata", "final"]
@@ -64,18 +64,26 @@ class Data:
         self.shuffled_x.append(x)
         self.shuffled_y.append(y)
         self.shuffled_metadata.append(md)
+
+    def _nbatch_batch_type_set(self, batch, as_tensor):
+        if as_tensor is not False:
+            dtype = as_tensor if as_tensor is not True else float32
+            batch.x = stack(tensor_type_set(batch.x, dtype=dtype))
+            batch.y = stack(tensor_type_set(batch.y, dtype=dtype))
     
-    def nbatch(self, batch_size=1):
+    def nbatch(self, batch_size=1, as_tensor=False):
         start, end = self.__i, self.__i + batch_size
         self.__i += batch_size
         done = self.__i >= self.size
         if done:
             self.__i = 0
-        return Batch(self.shuffled_x[start:end], self.shuffled_y[start:end], self.shuffled_metadata[start:end], final=done)
-    
-    def generator(self, batch_size=1):
-        batch = self.nbatch(batch_size=batch_size)
+        batch = Batch(self.shuffled_x[start:end], self.shuffled_y[start:end], self.shuffled_metadata[start:end], final=done)
+        self._nbatch_batch_type_set(batch, as_tensor)
+        return batch
+
+    def generator(self, *args, batch_size=1, **kwargs):
+        batch = self.nbatch(batch_size=batch_size, *args, **kwargs)
         yield batch
         while not batch.final:
-            batch = self.nbatch(batch_size=batch_size)
+            batch = self.nbatch(batch_size=batch_size, *args, **kwargs)
             yield batch

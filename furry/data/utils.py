@@ -55,6 +55,13 @@ def upload(x, dev=default_device()):
 def download(x):
     return upload(x, dev=furry.dev.CPU).detach().numpy()
 
+def tensor_type_set(tensors, dtype=float32):
+    return [to_tensor(tl, dtype=dtype) for tl in tensors]
+
+def batch_type_set(self, batch, dtype):
+    batch.x = tensor_type_set(batch.x, dtype=dtype)
+    batch.y = tensor_type_set(batch.y, dtype=dtype)
+
 stack = torch.stack
 unstack = torch.unbind
 squeeze = torch.squeeze
