@@ -23,6 +23,8 @@ class Adam(Optimizer):
                 grad = param.grad.data
                 self.m[param] = m = self.beta_1 * self.m[param] + (1 - self.beta_1) * grad
                 self.v[param] = v = self.beta_2 * self.v[param] + (1 - self.beta_2) * (grad ** 2)
+                ### In the paper, the authors introduce 2 methods for computing
+                ### this, and the commented out method is the slower one.
                 #m_h = m / (1 - (self.beta_1 ** self.t))
                 #v_h = v / (1 - (self.beta_2 ** self.t))
                 a_t = self.alpha * torch.sqrt(1 - self.beta_2 ** self.t) / (1 - self.beta_1 ** self.t)
