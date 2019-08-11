@@ -3,9 +3,12 @@ from furry.data.data import Batch, Data
 
 class ParallelLoadedData(Data):
     def load(self):
+        self.loader = threading.Thread(target=self.load_data, args=self.__loader_args)
+        self._start()
+        self.__preload__(*self.__preload_args[0], *self.__preload_args[1])
         self.loader.start()
 
-    def __init__(self, *args, cache=True, **kwargs):
+    def __init__(self, *args, cache=True, load_on_creation=False, **kwargs):
         super().__init__([], [])
         self.cache = cache
         self.current_x = []
@@ -13,6 +16,9 @@ class ParallelLoadedData(Data):
         self.current_metadata = []
         self.new_sample_loaded = threading.Event()
         self.finished = threading.Event()
+        self.__stop = threading.Event()
+        self.__stopped = threading.Event()
+        self.__running = False
         self.__finished_or_new_sample_loaded = threading.Event()
         def register_new_sample(x, y, md=None):
             if md is None:
@@ -29,12 +35,33 @@ class ParallelLoadedData(Data):
         def finished():
             self.finished.set()
             self.__finished_or_new_sample_loaded.set()
-        self.loader = threading.Thread(target=self.load_data, args=(register_new_sample, finished))
-        self.__preload__(*args, **kwargs)
-        self.load()
+        self.__loader_args = (register_new_sample, finished)
+        self.__preload_args = (args, kwargs)
+        if load_on_creation:
+            self.load()
     
     def __preload__(self, *args, **kwargs):
         pass
+
+    @property
+    def running(self):
+        return self.__running
+
+    def _stop(self):
+        return self.__stop.is_set()
+
+    def _start(self):
+        self.__running = True
+        self.__stopped.clear()
+
+    def stop(self):
+        self.__stop.set()
+        self.__stopped.wait()
+    
+    def _stopped(self):
+        self.__stop.clear()
+        self.__stopped.set()
+        self.__running = False
 
     def load_data(self, register_new_sample, finished):
         pass
